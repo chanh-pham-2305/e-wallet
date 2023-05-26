@@ -8,7 +8,7 @@ const path = require('path');
 let loginFail = 0;
 let DateFailed = 0;
 const  UserController  = require('../controllers/UserController');
-const User = require('../models/UserModel');
+const User = require('../models/User');
 const registerValidator = require('./validators/registerValidator')
 const loginValidator = require('./validators/loginValidator')
 const changePasswordValidator = require('./validators/changePasswordValidator')
@@ -39,11 +39,10 @@ router.get('/firstLogin',UserController.firstLogin)
 router.get('/reuploadPhoto',UserController.reuploadPhoto)
 router.get('/logout',UserController.logout)
 
-router.post('/register',registerValidator,mutiUpload,  async (req, res) => {
+router.post('/register',registerValidator, mutiUpload,  async (req, res) => {
     console.log(req);
     let result = validationResult(req);
         if (result.errors.length === 0){
-
             const {phone,email,fullname,date,address,front_photo,back_photo} = req.body;
 
             const user_phone = await User.findOne({ phone });
@@ -62,11 +61,9 @@ router.post('/register',registerValidator,mutiUpload,  async (req, res) => {
                 return res.redirect('/register')
             }
             if (!user_email && !user_phone) {
-                const username = Math.random().toString().slice(2,12)
-                const password = Math.random().toString(36).slice(2,8)
-                // console.log(user,password);
+                // const username = Math.random().toString().slice(2,12)
 
-                const hashedPassword = await bcrypt.hash(password, 10);
+                const password = await bcrypt.hash( Math.random().toString(36).slice(2,8) , 10);
 
                 const newUser = new User({
                     phone,
@@ -74,21 +71,22 @@ router.post('/register',registerValidator,mutiUpload,  async (req, res) => {
                     fullname,
                     date,
                     address,
-                    username,
-                    hashedPassword,
+                    password,
                 });
-                console.log(username,password);
+                //log information
+                console.log(phone,email,password);
+
                 const savedUser = await newUser.save();
-                const subject = 'Bạn đã đăng ký thành công tài khoản ví điện tử của chúng tôi.'
-                const notes = ` Tài khoản của bạn là:
-                                Tên tài khoản: ${username}
-                                Mật khẩu: ${password} `
+                // const subject = 'Bạn đã đăng ký thành công tài khoản ví điện tử của chúng tôi.'
+                // const notes = ` Tài khoản của bạn là:
+                //                 Tên tài khoản: ${username}
+                //                 Mật khẩu: ${password} `
                 // await sendEmail(email,subject,notes)
 
-                console.log(`${subject}:
-                            ${notes}`);
-                req.flash('error',`${subject}:
-                                        ${notes}`)
+                // console.log(`${subject}:
+                //             ${notes}`);
+                req.flash('error',`${phone}:
+                                        ${password}`)
                 return res.redirect('/login')
             }
         }
@@ -111,7 +109,7 @@ router.post('/register',registerValidator,mutiUpload,  async (req, res) => {
         }
 })
 
-router.post('/login', loginValidator,async (req, res) => {
+router.post('/login', loginValidator, async (req, res) => {
     let result = validationResult(req);
     if (result.errors.length === 0) {
         const {username, password} = req.body;

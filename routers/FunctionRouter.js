@@ -6,7 +6,7 @@ const  FunctionController  = require('../controllers/FunctionController');
 const checkSessionLogin = require('../controllers/middleware/checkSessionLogin')
 const checkVerification = require('../controllers/middleware/checkVerification')
 
-const User = require('../models/UserModel');
+const User = require('../models/User');
 const DepositCard = require('../models/DepositCard');
 const WithdrawCard = require('../models/WithdrawCard');
 const DepositHistory = require('../models/DepositHistory');
