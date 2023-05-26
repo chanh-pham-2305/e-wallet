@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Đăng ký</title>
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+    />
+
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <form class="p-3 mt-3" method = "post" action="/register" enctype = "application / x-www-form-urlencoded">
+        <div class="row">
+          <div class="col">
+            <h3 class="title">Đăng ký</h3>
+            <div class="inputBox">
+              <input
+                type="text"
+                name="phone"
+                id="phone"
+                value="<%= phone %>"
+                placeholder="Số điện thoại"
+              />
+            </div>
+            <div class="inputBox">
+              <input type="email" name="email" id="email" placeholder="Email" value="<%= email %>" />
+            </div>
+            <div class="inputBox">
+              <input
+                type="text"
+                name="fullname"
+                id="fullname"
+                value="<%= fullname %>"
+                placeholder="Họ và tên"
+              />
+            </div>
+            <div class="inputBox">
+              <p class="text-uppercase text-center fw-bold">Ngày sinh</p>
+              <input type="date" name="date" id="date" placeholder="Ngày sinh" value="<%= date %>" />
+            </div>
+            <div class="inputBox">
+              <input
+                type="text"
+                name="address"
+                id="address"
+                placeholder="Địa chỉ"
+                value="<%= address %>"
+              />
+            </div>
+            <form action="/register" enctype="multipart/form-data">
+              <div class="inputBox">
+                <p class="text-uppercase text-center fw-bold">Mặt trước</p>
+                <div class="mb-3">
+                  <input class="form-control" type="file" accept=".png,.jpg,.gif,.jpeg" id="front_photo" name="front_photo" value=""/>
+                </div>
+              </div>
+              <div class="inputBox">
+                <p class="text-uppercase text-center fw-bold">Mặt sau</p>
+                <div class="mb-3">
+                  <input class="form-control" type="file" accept=".png,.jpg,.gif,.jpeg" id="back_photo" name="back_photo" value="" />
+                </div>
+              </div>
+            </form>
+            <div class="form-group">
+              <% if (error.length > 0) { %>
+                  <div class="alert alert-danger alert-dismissible fade show">
+                    <%= error %>
+                  </div>
+              <% } %>
+            </div>
+            <button class="submit-btn" type="submit">Đăng ký</button>
+            <div class="text-center fs-6">
+              Đã có tài khoản ? <a href="/login">Đăng nhập ngay</a>
+            </div>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </body>
+</html>

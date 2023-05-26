@@ -1,0 +1,60 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- <script src="/js/main.js"></script> -->
+    <title>Chuyển tiền</title>
+
+    <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+    />
+</head>
+<body>
+<div class="container">
+    <%- include('../partials/navbar.ejs') %>
+    <form action="" method="post">
+        <div class="row">
+            <div class="col">
+                <h3 class="title">CHUYỂN TIỀN</h3>
+                <div class="inputBox">
+                    <span>SĐT người nhận:</span>
+                    <input type="text" id="phone" name="phone" placeholder="0123456789" value="<%= phone %>">
+                </div>
+                <div class="inputBox">
+                    <span>Số tiền chuyển:</span>
+                    <input type="number" id="money" name="money" placeholder="10000" value="<%= money %>">
+                </div>
+                <div class="inputBox">
+                    <p>Chọn bên trả phí:</p>
+                    <div class="radio-input">
+                        <label for="sender">Người gửi</label>
+                        <input type="radio" id="sender" name="fee" value="sender">
+                        <label for="receiver">Người nhận</label>
+                        <input type="radio" id="receiver" name="fee" value="receiver"><br>
+                    </div>
+                </div>
+                <div class="inputBox">
+                    <span>Ghi chú: </span>
+                    <textarea type="text" id="note" name="note" placeholder="Tin nhắn đến người nhận" value="<%= note %>"></textarea>
+                </div>
+                <div class="form-group">
+                    <% if (error.length > 0) { %>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                          <%= error %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <input type="submit" value="xác nhận" class="submit-btn">
+        </div>
+        <%- include('../partials/back.ejs') %>
+    </form>
+</div>
+</body>
+
+</html>
