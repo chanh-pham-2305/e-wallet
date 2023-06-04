@@ -1,15 +1,12 @@
+const { date } = require('joi')
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
 
-const WithdrawHistorySchema = new Schema({
+const WithdrawHistorySchema = new mongoose.Schema({
 
-    username: {type:String},
-    cardCode:{type:String},
+    userID: {type:String},
     money: {type:Number},
-    fee:{type:Number,default:5},
-    note: {type:String},
-    date: {type:String},
-    day:{type: Number,default:0},
+    fee:{type:Number,default:0},
+    date: {type:Date, default: new Date()},
     status: {type:String,default:'success'},
 
 })

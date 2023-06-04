@@ -1,23 +1,32 @@
-const {check} = require('express-validator')
+const Joi = require('joi')
 
-const registerValidator = [
-    check('phone').exists().withMessage('Vui lòng nhập số điện thoại người dùng')
-    .notEmpty().withMessage('Không được để trống số điện thoại người dùng')
-    .isLength({min: 10, max: 10}).withMessage('Số điện thoại phải đầy đủ 10 chữ số'),
+const registerValidator = (data) => {
+    const rule = Joi.object({
+        phone: Joi.string()
+                .empty()
+                .length(10)
+                .required()
+                .messages({
+                    'string.empty': `"phone" is not allowed to be empty`,
+                    'string.length': `"phone" must have 10 numbers`,
+                }),
+        email: Joi.string()
+                .empty()
+                .email()
+                .required(),
+        fullname: Joi.string()
+                .empty()
+                .min(5)
+                .required(),
+        date: Joi.date()
+                .empty()
+                .required(),
+        address: Joi.string()
+                .empty()
+                .required(),
+    })
 
-    check('email').exists().withMessage('Vui lòng nhập email người dùng')
-    .notEmpty().withMessage('Không được để trống email người dùng')
-    .isEmail().withMessage('Đây không phải là email hợp lệ'),
-
-    check('fullname').exists().withMessage('Vui lòng nhập họ tên người dùng')
-    .notEmpty().withMessage('Không được để trống họ tên người dùng')
-    .isLength({min: 5}).withMessage('Họ tên người dùng phải từ 5 ký tự'),
-
-    check('date').exists().withMessage('Vui lòng nhập ngày tháng năm sinh')
-    .notEmpty().withMessage('Không được để trống ngày tháng năm sinh'),
-
-    check('address').exists().withMessage('Vui lòng nhập địa chỉ')
-    .notEmpty().withMessage('Không được để trống địa chỉ'),
-]
+    return rule.validate(data)
+}
 
 module.exports = registerValidator

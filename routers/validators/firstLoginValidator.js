@@ -1,19 +1,26 @@
-const {check} = require('express-validator')
+const Joi = require('joi')
 
-const firstLoginValidator = [
-
-    check('password').exists().withMessage('Vui lòng nhập mật khẩu mới')
-    .notEmpty().withMessage('Không được để trống mật khẩu mới')
-    .isLength({min: 6,max:6}).withMessage('Mật khẩu phải có 6 ký tự'),
-
-    check('rePassword').exists().withMessage('Vui lòng nhập xác nhận mật khẩu')
-    .notEmpty().withMessage('Vui lòng nhập xác nhận mật khẩu')
-    .custom((value, {req}) => {
-        if (value !== req.body.password) {
-            throw new Error('Mật khẩu không khớp')
-        }
-        return true;
+const firstLoginValidator = (data) =>{
+    const rule = Joi.object({
+        password: Joi.string()
+                    .required()
+                    .min(6)
+                    .messages({
+                        'string.required': 'Please enter a new password',
+                        'string.min' : 'Password must be more than 6 characters'
+                    }),
+        rePassword: Joi.string()
+                    .required()
+                    .min(6)
+                    .ref('password')
+                    .messages({
+                        'string.required': 'Please re-enter a new password',
+                        'string.min' : 'Password must be more than 6 characters',
+                        'string.ref': 'Password does not match',
+                    }),
     })
-]
+
+    return rule.validate(data)
+}
 
 module.exports = firstLoginValidator

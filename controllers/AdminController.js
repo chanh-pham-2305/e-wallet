@@ -1,35 +1,98 @@
+//models
+const User = require('../models/User')
+const BuyCardHistory = require('../models/BuyCardHistory');
+const TransferHistory = require('../models/TransferHistory');
+const DepositHistory = require('../models/DepositHistory');
+const WithdrawHistory = require('../models/WithdrawHistory');
+
 class AdminController {
     index(req, res) {
-      res.render("admin/index");
+      return res.status(201).send('home admin page');
     }
 
-    active(req, res) {
-      res.render("admin/table-data-active");
+    async getUser (req,res) {
+
+      const _id = req.params.id
+      const user = User.findById(_id)
+
+      return res
+              .status(201)
+              .json({user: user})
     }
 
-    history(req, res) {
-      res.render("admin/table-data-history");
+    async getAllUsers (req,res) {
+
+      const users = User.find()
+
+      return res
+              .status(201)
+              .json({number_of_users: users.length,
+                      users: users})
     }
 
-    disable(req, res) {
-      res.render("admin/table-data-disable");
+    async getTransactionHistoryUser (req,res) {
+      const userID = req.params.id
+
+      let transactions = []
+      const buyCardHistory = BuyCardHistory.find(userID)
+      const transferHistoryFromRemitterID = TransferHistory.find({remitterID:userID})
+      const transferHistoryFromPayeeID = TransferHistory.find({payeeID:userID})
+      const depositHistory = DepositHistory.find(userID)
+      const withdrawHistory = WithdrawHistory.find(userID)
+
+      transactions = transactions.concat(buyCardHistory)
+                                  .concat(transferHistoryFromRemitterID)
+                                  .concat(transferHistoryFromPayeeID)
+                                  .concat(depositHistory)
+                                  .concat(withdrawHistory)
+
+      return res
+              .status(201)
+              .json({ msg: `transactions from ${userID}: `,
+                      number_of_transactions: transactions.length,
+                      transactions: transactions})
     }
 
-    lock(req, res) {
-        res.render("admin/table-data-lock");
-      }
+    async getAllBuyCardHistory (req,res) {
 
-    nonactive(req, res) {
-        res.render("admin/table-data-non-active");
-      }
+      const buyCards = await BuyCardHistory.find()
 
-    submit(req, res) {
-        res.render("admin/table-data-submit");
-      }
+      return res
+              .status(201)
+              .json({ number_of_transactions: buyCards.length,
+                      buyCards: buyCards})
+    }
 
-    add(req, res) {
-        res.render("admin/form-add-tai-khoan");
-      }
+    async getAllTransferHistory (req,res) {
+
+      const transfers = await TransferHistory.find()
+
+      return res
+              .status(201)
+              .json({ number_of_transactions: transfers.length,
+                      transfers: transfers})
+    }
+
+    async getAllDepositHistory (req,res) {
+
+      const deposits = await DepositHistory.find()
+
+      return res
+              .status(201)
+              .json({ number_of_transactions: deposits.length,
+                      deposits: deposits})
+    }
+
+    async getAllWithdrawHistory (req,res) {
+
+      const withdraws = await WithdrawHistory.find()
+
+      return res
+              .status(201)
+              .json({ number_of_transactions: withdraws.length,
+                      withdraws: withdraws})
+    }
+
   }
 
   module.exports = new AdminController();

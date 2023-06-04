@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const UserSchema = mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     phone:{
         type:String,
         unique: true,
@@ -21,23 +21,7 @@ const UserSchema = mongoose.Schema({
     password:{
         type:String,
     },
-    front_photo:{
-        type:String,
-        default:'',
-    },
-    back_photo:{
-        type:String,
-        default:'',
-    },
     balance:{
-        type:Number,
-        default:0,
-    },
-    status:{
-        type:String,
-        default: 'wait_verification',
-    },
-    loginAbnormal:{
         type:Number,
         default:0,
     },

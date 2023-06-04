@@ -1,13 +1,9 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
 
-const DepositHistorySchema = new Schema({
-
-    username: {type:String},
-    cardCode: {type:String},
-    CVV: {type:String},
-    money: {type:Number},
-    date:{type:String},
+const DepositHistorySchema = new mongoose.Schema({
+    userID: {type:String},
+    depositMoney: {type:Number},
+    date:{type:String, default: new Date()},
     status: {type:String,default:'success'},
 
 })

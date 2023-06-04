@@ -1,0 +1,23 @@
+POST http://localhost:3000/api/v1/register
+Content-Type: application/json
+
+{
+    "phone": "0123456787",
+    "email": "chanhpham0123456787@gmail.com",
+    "fullname": "pham cong chanh",
+    "date": "2000-2-23",
+    "address": "thang binh, quang nam"
+}
+
+###
+POST http://localhost:3000/api/v1/login
+Content-Type: application/json
+
+{
+    "username": "0123456787",
+    "password": "od1tcb"
+}
+
+###
+
+GET http://localhost:3000/api/v1/changePassword
