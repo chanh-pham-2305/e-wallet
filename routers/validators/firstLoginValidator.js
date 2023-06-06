@@ -12,11 +12,11 @@ const firstLoginValidator = (data) =>{
         rePassword: Joi.string()
                     .required()
                     .min(6)
-                    .ref('password')
+                    .equal(Joi.ref('password'))
                     .messages({
                         'string.required': 'Please re-enter a new password',
                         'string.min' : 'Password must be more than 6 characters',
-                        'string.ref': 'Password does not match',
+                        'string.equal': 'Password does not match',
                     }),
     })
 

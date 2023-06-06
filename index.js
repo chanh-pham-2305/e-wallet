@@ -5,6 +5,8 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const app=express()
+
+//middleware
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -22,12 +24,17 @@ app.use('/api/v1/', UserRouter)
 app.use('/api/v1/wallet/', WalletRouter);
 app.use('/api/v1/admin/', AdminRouter);
 
+
 app.use((req, res) => {
-    return res.status(404).json({msg: 'page not found'})
+    return res
+            .status(404)
+            .json({msg: 'page not found'})
 })
 app.use((err,req,res,next) => {
     console.log(err);
-    return res.status(500).json({msg: 'error server'})
+    return res
+            .status(500)
+            .json({msg: 'error server'})
 })
 const port= process.env.PORT || 8080
 
@@ -35,6 +42,7 @@ const start = async () =>{
     try {
         await connectDB(process.env.MONGO_URI)
         app.listen(port, console.log(`server listen on port: ${port}`))
+
     } catch (error) {
         console.log(error);
     }

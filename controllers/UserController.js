@@ -14,72 +14,7 @@ const firstLoginValidator = require('../routers/validators/firstLoginValidator')
 const changePasswordValidator = require('../routers/validators/changePasswordValidator')
 class UserController {
   async index(req, res) {
-
-    if(!req.session.user){
-      return res.redirect('/login');
-    }
-    const user = req.session.user;
-    const detailUser = await User.findOne({user})
-    const formatMoney = (value) => {
-      var money = value.toString().split('');
-      var ii = 0;
-      for(var i = money.length - 1; i > 0; i--) {
-          ii++;
-          if(ii%3 == 0) {
-              money.splice(i, 0, ",");
-          }
-      }
-      return money.join('');
-    }
-    let userDetail ={
-      fullname: detailUser.fullname,
-      phone: detailUser.phone,
-      email: detailUser.email,
-      date: detailUser.date,
-      address: detailUser.address,
-      username: detailUser.username,
-      balance: detailUser.balance,
-      status: '',
-    }
-    if(detailUser.status == 'wait_verification'){
-      userDetail.status = 'Chờ xác minh'
-    }
-    else if(detailUser.status == 'wait_update'){
-      userDetail.status = 'Chờ cập nhật'
-    }
-    else if(detailUser.status == 'locked'){
-      userDetail.status = 'Đã khóa'
-    }
-    else{
-      userDetail.status = 'Đã xác minh'
-    }
-    userDetail.balance = formatMoney(parseInt(userDetail.balance))
-    const error_verification = req.flash('error_verification') || ''
-    res.render('user/index', {userDetail,error_verification});
-  }
-
-  homePageLogin(req, res) {
-    if (req.session.user) {
-      return res.redirect('/')
-    }
-    return res.status(201).send('home login')
-  }
-
-  homePageRegister(req, res) {
-    return res.status(201).send('home get register')
-  }
-
-  homePageResetPassword(req, res) {
-    return res.status(201).send('home reset password')
-  }
-  homePageChangePassword(req, res) {
-    return res.status(201).send('home change password')
-  }
-  homePageFirstLogin(req, res) {
-    return res.status(201).send('home first login')
-  }
-  homePageLogout(req, res) {
-    return res.status(201).send('home logout')
+    return res.status(201).send('home page')
   }
   async register(req,res){
     //check error when validator data
@@ -120,10 +55,18 @@ class UserController {
   async login (req, res){
       //check error when validator data
       const {error} = loginValidator(req.body)
-      if(error) return res.status(402).send(error.details[0].message)
+      if(error) return res
+                        .status(402)
+                        .send(error.details[0].message)
 
       const {username, password} = req.body;
+
       try {
+
+        //check admin
+          if(username == process.env.ADMIN && (password === process.env.PASS_ADMIN)){
+              return res.send('admin page')
+          }
           //check phone or email
           var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -133,20 +76,22 @@ class UserController {
 
           let success = await bcrypt.compare(password, existingUser.password);
 
-          if(existingUser.username == 'admin' && success){
-              return res.send('admin page')
-          }
-          else if(existingUser.isFirstLogin && success){
-              return res.redirect('/firstLogin')
-          }
-          else if(!success){
-              return res.status(404).json({msg: 'password incorrect'})
+          if(!success){
+              return res
+                      .status(404)
+                      .json({msg: 'password incorrect'})
           }
 
           const accessToken = jwt.sign({id: existingUser._id}, process.env.SECRET_KEY)
+          res.cookie('token', accessToken)
+
+          if(existingUser.isFirstLogin && success){
+            return res
+                    .status(201)
+                    .send('please change password when user login for the first time, login -> firstLogin')
+          }
 
           return res.status(201)
-                    .cookie('token', accessToken)
                     .json({
                           msg:'Login successfully',
                           user:{
@@ -158,43 +103,82 @@ class UserController {
       }
       catch (err) {
         console.log(err);
-        return res.status(404).json({msg: 'Unregistered phone number or email'})
+        return res
+                .status(404)
+                .json({msg: 'Unregistered phone number or email'})
       }
   }
 
   async firstLogin (req, res){
     const {error} = firstLoginValidator(req.body)
-    if(error) return res.status(402).send(error.details[0].message)
+    if(error) return res
+                      .status(402)
+                      .send(error.details[0].message)
 
     const { password } = req.body;
 
-    //check authentication
-    //{}
-    let username = ''
+    const _id = req.user._id
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const updatePassword = await User.updateOne({ username:username},{$set: {hashedPassword: hashedPassword, isFirstLogin: false}})
 
-    return res.status(201).json({msg:'Change password successfully when logging in for the first time', user:{username,updatePassword}})
+    const updatedUser = await User.findByIdAndUpdate( _id,
+                                                    { password: hashedPassword,
+                                                      isFirstLogin: false },
+                                                    { new: true})
+
+    return res
+            .status(201)
+            .json({ msg:'Change password successfully when logging in for the first time',
+                    user:updatedUser})
   }
 
   async changePassword (req, res){
     const {error} = changePasswordValidator(req.body)
-    if(error) return res.status(402).send(error.details[0].message)
+    if(error) return res
+                      .status(402)
+                      .send(error.details[0].message)
 
-    const username = ''
-    const {oldPassword, password} = req.body;
-    const user_username = await User.findOne({ username });
-    const success = await bcrypt.compare(oldPassword, user_username.hashedPassword);
+    const { oldPassword,
+            password } = req.body;
 
-    if(!success) {
-      return res.status(402).json({msg: 'Incorrect old password'})
-    }
-    else{
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const updatePassword = await User.updateOne({ username:username}, {$set: {hashedPassword: hashedPassword}})
-      return res.status(201).json({msg: 'change password success', password:password})
-    }
+    const { _id, } = req.user._id
+
+    if (oldPassword === password) return res
+                                          .status(404)
+                                          .json({msg: 'New password must different old password'})
+
+    const checkOldPassword = await bcrypt.compare(oldPassword, req.user.password)
+    if(!checkOldPassword) return res
+                                  .status(404)
+                                  .json({ msg: 'Old password is not correct, please try again'})
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const updatedUser = await User.findByIdAndUpdate( _id,
+                                                    { password: hashedPassword},
+                                                    { new: true})
+
+    return res
+            .status(201)
+            .json({ msg:'Change password successfully',
+                    user:updatedUser})
+  }
+
+  async logout (req, res){
+
+    let token_cookie = 'token'
+    let cookies = req.cookies
+
+    if (!Object.hasOwnProperty.bind(cookies)(token_cookie)) return res
+                                                                    .status(404)
+                                                                    .send('user can not logout')
+
+    //clear token
+    res.clearCookie('token')
+
+    return res
+            .status(201)
+            .send('logout successfully')
   }
 }
 

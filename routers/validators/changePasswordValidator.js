@@ -1,4 +1,4 @@
-const {check} = require('express-validator')
+const Joi = require('joi')
 
 const changePasswordValidator = (data) =>{
     const rule = Joi.object({
@@ -19,7 +19,7 @@ const changePasswordValidator = (data) =>{
         rePassword: Joi.string()
                     .required()
                     .min(6)
-                    .ref('password')
+                    .equal(Joi.ref('password'))
                     .messages({
                         'string.required': 'Please re-enter a new password',
                         'string.min' : 'Password must be more than 6 characters',

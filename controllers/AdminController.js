@@ -13,7 +13,7 @@ class AdminController {
     async getUser (req,res) {
 
       const _id = req.params.id
-      const user = User.findById(_id)
+      const user = await User.findById(_id)
 
       return res
               .status(201)
@@ -22,7 +22,7 @@ class AdminController {
 
     async getAllUsers (req,res) {
 
-      const users = User.find()
+      const users = await User.find()
 
       return res
               .status(201)
@@ -34,11 +34,11 @@ class AdminController {
       const userID = req.params.id
 
       let transactions = []
-      const buyCardHistory = BuyCardHistory.find(userID)
-      const transferHistoryFromRemitterID = TransferHistory.find({remitterID:userID})
-      const transferHistoryFromPayeeID = TransferHistory.find({payeeID:userID})
-      const depositHistory = DepositHistory.find(userID)
-      const withdrawHistory = WithdrawHistory.find(userID)
+      const buyCardHistory = await BuyCardHistory.find({userID})
+      const transferHistoryFromRemitterID = await TransferHistory.find({remitterID:userID})
+      const transferHistoryFromPayeeID = await TransferHistory.find({payeeID:userID})
+      const depositHistory = await DepositHistory.find({userID})
+      const withdrawHistory = await WithdrawHistory.find({userID})
 
       transactions = transactions.concat(buyCardHistory)
                                   .concat(transferHistoryFromRemitterID)

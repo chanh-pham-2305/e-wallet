@@ -4,13 +4,15 @@ const router = express.Router();
 //controllers
 const  AdminController  = require('../controllers/AdminController');
 
+
+//routers
 router.get('/',AdminController.index)
-router.get('/getUser',AdminController.getUser)
-router.get('/getAllUsers',AdminController.getAllUsers)
-router.get('/getTransactionHistoryUser',AdminController.getTransactionHistoryUser)
-router.get('/getAllBuyCardHistory',AdminController.getAllBuyCardHistory)
-router.get('/getAllTransferHistory',AdminController.getAllTransferHistory)
-router.get('/getAllDepositHistory',AdminController.getAllDepositHistory)
-router.get('/getAllWithdrawHistory',AdminController.getAllWithdrawHistory)
+router.get('/user/:id',AdminController.getUser)
+router.get('/users',AdminController.getAllUsers)
+router.get('/history/transactions/:id',AdminController.getTransactionHistoryUser)
+router.get('/history/buyCard',AdminController.getAllBuyCardHistory)
+router.get('/history/transfer',AdminController.getAllTransferHistory)
+router.get('/history/deposit',AdminController.getAllDepositHistory)
+router.get('/history/withdraw',AdminController.getAllWithdrawHistory)
 
 module.exports = router;

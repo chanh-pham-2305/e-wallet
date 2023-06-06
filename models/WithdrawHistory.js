@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const WithdrawHistorySchema = new mongoose.Schema({
 
     userID: {type:String},
-    money: {type:Number},
+    withdrawMoney: {type:Number},
     fee:{type:Number,default:0},
     date: {type:Date, default: new Date()},
     status: {type:String,default:'success'},

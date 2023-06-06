@@ -131,13 +131,15 @@ class WalletController {
     const {error } = transactionValidator(req.body)
     if(error) return res.status(401).send(error.details[0].message)
 
+    let {money} = req.body
     let userID = req.user._id
     let depositMoney = +money
 
     const bankAccount = await BankAccount.findOne({userConnectionID:userID})
     let newMoneyBankAccount = bankAccount.money - depositMoney
     if(newMoneyBankAccount < 50000 ) return res
-                                            .status({msg: 'Money in bank account is not enough, please top up and try again'})
+                                            .status(404)
+                                            .json({msg: 'Money in bank account is not enough, please top up and try again'})
     //update BankAccount
     const updatedBankAccount = await BankAccount.findByIdAndUpdate(bankAccount._id,
                                                                     {money: newMoneyBankAccount},
@@ -163,7 +165,8 @@ class WalletController {
   async withdraw(req, res) {
     const {error } = transactionValidator(req.body)
     if(error) return res.status(401).send(error.details[0].message)
-
+    
+    let {money} = req.body
     let userID = req.user._id
     let withdrawMoney = +money
 
@@ -171,7 +174,8 @@ class WalletController {
     let user = await User.findOne({_id: userID})
     let newMoneyUser = user.balance - withdrawMoney
     if(newMoneyUser < 0 ) return res
-    .status({msg: 'Money in wallet is not enough, please top up and try again'})
+                                  .status(404)
+                                  .json({msg: 'Money in wallet is not enough, please top up and try again'})
     //update User
     const updatedUser = await User.findByIdAndUpdate(user._id,
                                                     {balance: newMoneyUser},
@@ -184,7 +188,7 @@ class WalletController {
                                                                     {new: true})
     //update DepositHistory
     const newWithdrawHistory = await WithdrawHistory.create({ userID,
-                                                            WithdrawMoney })
+                                                            withdrawMoney })
 
     return res
             .status(201)
