@@ -5,7 +5,6 @@ const DepositHistorySchema = new mongoose.Schema({
     depositMoney: {type:Number},
     date:{type:String, default: new Date()},
     status: {type:String,default:'success'},
-
-})
+    })
 
 module.exports = mongoose.model('DepositHistory', DepositHistorySchema)

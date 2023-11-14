@@ -1,0 +1,617 @@
+openapi: 3.0.3
+info:
+  title: Swagger E wallet
+  description: |-
+    This is REST API about E wallet with base-function such as register,
+    login, buy card, transfer, deposit, withdraw.
+  contact:
+    email: chanhpham2305@gmail.com
+  version: 1.0.0
+servers:
+  - url: https://userstore3.swagger.io/api/v3
+tags:
+  - name: wallet
+    description: Thao tác trên ví điện tử
+  - name: admin
+    description: Tác vụ với admin
+  - name: user
+    description: Tác vụ với user
+paths:
+  /admin/{userID}:
+    get:
+      tags:
+        - admin
+      summary: lấy thông tin khách hàng theo ID
+      description: Lấy thông tin khách hàng theo ID
+      operationId: getUser
+      responses:
+        '200':
+          description: Thao tác thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: User not found
+      # security:
+    post:
+      tags:
+        - user
+      summary: Add a new user to the store
+      description: Add a new user to the store
+      operationId: adduser
+      requestBody:
+        description: Create a new user in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/user'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/user'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/user'
+        '405':
+          description: Invalid input
+      security:
+        - userstore_auth:
+            - write:users
+            - read:users
+  /admin/users:
+    get:
+      tags:
+        - admin
+      summary: Lấy thông tin tất cả khách hàng
+      description: Lấy thông tin tất cả khách hàng
+      operationId: getUsers
+      responses:
+        '200':
+          description: Thao tác thành công
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '404':
+          description: Not found data
+  /admin/history/transactions/{userID}:
+    get:
+      tags:
+        - admin
+      summary: Lịch sử giao dịch của khách hàng
+      description: Lịch sử giao dịch của khách hàng
+      operationId: getTransactionHistoryUser
+      responses:
+        '201':
+          description: Thao tác thành công
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BuyCardHistory'
+                  # allOf:
+                  #   - $ref: '#/components/schemas/BuyCardHistory'
+                  #   - $ref: '#/components/schemas/DepositHistory'
+        '404':
+          description: Not found data
+  /admin/history/buyCard:
+    get:
+      tags:
+        - admin
+      summary: lấy lịch sử mua thẻ
+      description: lấy lịch sử mua thẻ
+      operationId: getAllBuyCardHistory
+      responses:
+        '200':
+          description: thao tác thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyCardHistory'
+        '404':
+          description: history not found
+  /admin/history/transfer:
+    get:
+      tags:
+        - admin
+      summary: lấy lịch sử chuyển tiền
+      description: lấy lịch sử chuyển tiền
+      operationId: getAllTransferHistory
+      responses:
+        '200':
+          description: thao tác thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyCardHistory'
+        '404':
+          description: history not found
+  /admin/history/deposit:
+    get:
+      tags:
+        - admin
+      summary: lấy lịch sử mua thẻ
+      description: lấy lịch sử mua thẻ
+      operationId: getAllBuyCardHistory
+      responses:
+        '200':
+          description: thao tác thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyCardHistory'
+        '404':
+          description: history not found
+  /admin/history/withdraw:
+    get:
+      tags:
+        - admin
+      summary: lấy lịch sử mua thẻ
+      description: lấy lịch sử mua thẻ
+      operationId: getAllBuyCardHistory
+      responses:
+        '200':
+          description: thao tác thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyCardHistory'
+        '404':
+          description: history not found
+
+  /wallet/buyCard:
+    post:
+      tags:
+        - wallet
+      summary: tạo giao dịch với ví điện tử
+      description: tạo giao dịch với ví điện tử
+      operationId: buyCard
+      responses:
+        '200':
+          description: thao tác thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyCardHistory'
+        '404':
+          description: history not found
+  /wallet/transfer:
+    post:
+      tags:
+        - wallet
+      summary: tạo giao dịch với ví điện tử
+      description: tạo giao dịch với ví điện tử
+      operationId: transfer
+      responses:
+        '200':
+          description: thao tác thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyCardHistory'
+        '404':
+          description: history not found
+  /wallet/deposit:
+    post:
+      tags:
+        - wallet
+      summary: tạo giao dịch với ví điện tử
+      description: tạo giao dịch với ví điện tử
+      operationId: deposit
+      responses:
+        '200':
+          description: thao tác thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyCardHistory'
+        '404':
+          description: history not found
+  /wallet/withdraw:
+    post:
+      tags:
+        - wallet
+      summary: tạo giao dịch với ví điện tử
+      description: tạo giao dịch với ví điện tử
+      operationId: withdraw
+      responses:
+        '200':
+          description: thao tác thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyCardHistory'
+        '404':
+          description: history not found
+
+  /user/register:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+  /user/firstLogin:
+    post:
+      tags:
+        - user
+      summary: Creates list of users with given input array
+      description: Creates list of users with given input array
+      operationId: createUsersWithListInput
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: successful operation
+  /user/login:
+    get:
+      tags:
+        - user
+      summary: Logs user into the system
+      description: ''
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: false
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/xml:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+  /user/logout:
+    get:
+      tags:
+        - user
+      summary: Logs out current logged in user session
+      description: ''
+      operationId: logoutUser
+      parameters: []
+      responses:
+        default:
+          description: successful operation
+  /user/changePassword:
+    get:
+      tags:
+        - user
+      summary: Get user by user name
+      description: ''
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: 'The name that needs to be fetched. Use user1 for testing. '
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+    put:
+      tags:
+        - user
+      summary: Update user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: name that need to be deleted
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent user in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        default:
+          description: successful operation
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+components:
+  schemas:
+    BuyCardHistory:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 100000
+        username:
+          type: string
+          example: fehguy
+        address:
+          type: array
+          xml:
+            name: addresses
+            wrapped: true
+    User:
+      type: object
+      properties:
+        _id:
+          type: object
+          format: object
+          example: 89234712498128415
+        phone:
+          type: string
+          format: string
+          example: 0834552643
+        email:
+          type: string
+          format: email
+          example: chanhpham2305@gmail.com
+        fullName:
+          type: string
+          example: Pham Cong Chanh
+        date:
+          type: string
+          format: date-time
+          example: 23/05/2001
+        address:
+          type: string
+          example: Ho Chi Minh City
+        password:
+          type: string
+          example: 4i5u4398923
+        balance:
+          type: number
+          example: 0
+        isFirstLogin:
+          type: boolean
+          example: true
+      xml:
+        name: User
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 100000
+        username:
+          type: string
+          example: fehguy
+        address:
+          type: array
+          xml:
+            name: addresses
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/Address'
+      xml:
+        name: customer
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+          example: 437 Lytton
+        city:
+          type: string
+          example: Palo Alto
+        state:
+          type: string
+          example: CA
+        zip:
+          type: string
+          example: '94301'
+      xml:
+        name: address
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Dogs
+      xml:
+        name: category
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+      xml:
+        name: tag
+    user:
+      required:
+        - name
+        - photoUrls
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: doggie
+        category:
+          $ref: '#/components/schemas/Category'
+        photoUrls:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string
+            xml:
+              name: photoUrl
+        tags:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/Tag'
+        status:
+          type: string
+          description: user status in the store
+          enum:
+            - available
+            - pending
+            - sold
+      xml:
+        name: user
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: '##default'
+  requestBodies:
+    user:
+      description: user object that needs to be added to the store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/user'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/user'
+    UserArray:
+      description: List of user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+  securitySchemes:
+    userstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://userstore3.swagger.io/oauth/authorize
+          scopes:
+            write:users: modify users in your account
+            read:users: read your users
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header

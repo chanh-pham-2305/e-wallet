@@ -30,6 +30,7 @@ app.use((req, res) => {
             .status(404)
             .json({msg: 'page not found'})
 })
+
 app.use((err,req,res,next) => {
     console.log(err);
     return res

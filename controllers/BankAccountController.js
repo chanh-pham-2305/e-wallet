@@ -8,9 +8,9 @@ const transactionValidator = require("../routers/validators/transactionValidator
 
 class BankAccountController{
     async createAccount (req,res){
-        let userConnectionID = req.user._id
-        console.log(userConnectionID);
-        const checkAccount = await BankAccount.findOne({userConnectionID})
+        let user = req.user._id
+        console.log(user);
+        const checkAccount = await BankAccount.findOne({user})
 
         if(checkAccount) return res
                                 .status(401)
@@ -24,7 +24,7 @@ class BankAccountController{
 
         const newAccount = await BankAccount.create({ cardNumber,
                                                 accountNumber,
-                                                userConnectionID,
+                                                user,
                                                 expiredDate })
 
         return res

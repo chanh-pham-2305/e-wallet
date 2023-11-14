@@ -6,7 +6,6 @@ const  AdminController  = require('../controllers/AdminController');
 
 
 //routers
-router.get('/',AdminController.index)
 router.get('/user/:id',AdminController.getUser)
 router.get('/users',AdminController.getAllUsers)
 router.get('/history/transactions/:id',AdminController.getTransactionHistoryUser)

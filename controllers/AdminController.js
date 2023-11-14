@@ -6,9 +6,6 @@ const DepositHistory = require('../models/DepositHistory');
 const WithdrawHistory = require('../models/WithdrawHistory');
 
 class AdminController {
-    index(req, res) {
-      return res.status(201).send('home admin page');
-    }
 
     async getUser (req,res) {
 
@@ -16,7 +13,7 @@ class AdminController {
       const user = await User.findById(_id)
 
       return res
-              .status(201)
+              .status(200)
               .json({user: user})
     }
 
@@ -25,7 +22,7 @@ class AdminController {
       const users = await User.find()
 
       return res
-              .status(201)
+              .status(200)
               .json({number_of_users: users.length,
                       users: users})
     }
@@ -47,7 +44,7 @@ class AdminController {
                                   .concat(withdrawHistory)
 
       return res
-              .status(201)
+              .status(200)
               .json({ msg: `transactions from ${userID}: `,
                       number_of_transactions: transactions.length,
                       transactions: transactions})
@@ -58,7 +55,7 @@ class AdminController {
       const buyCards = await BuyCardHistory.find()
 
       return res
-              .status(201)
+              .status(200)
               .json({ number_of_transactions: buyCards.length,
                       buyCards: buyCards})
     }
@@ -68,7 +65,7 @@ class AdminController {
       const transfers = await TransferHistory.find()
 
       return res
-              .status(201)
+              .status(200)
               .json({ number_of_transactions: transfers.length,
                       transfers: transfers})
     }
@@ -78,7 +75,7 @@ class AdminController {
       const deposits = await DepositHistory.find()
 
       return res
-              .status(201)
+              .status(200)
               .json({ number_of_transactions: deposits.length,
                       deposits: deposits})
     }
@@ -88,7 +85,7 @@ class AdminController {
       const withdraws = await WithdrawHistory.find()
 
       return res
-              .status(201)
+              .status(200)
               .json({ number_of_transactions: withdraws.length,
                       withdraws: withdraws})
     }
